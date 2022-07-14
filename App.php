@@ -1,6 +1,6 @@
 <?
 class App {
-    private $db_pdo;
+    private $db;
 
     function __construct($host, $db, $user, $pass, $charset) {
 
@@ -11,14 +11,24 @@ class App {
         ];
 
         try {
-            $this->db_pdo = new PDO($dsn, $user, $pass, $options);
+            $this->db = new PDO($dsn, $user, $pass, $options);
         } catch (\PDOException $e) {
             throw new \PDOException($e->getMessage(), (int)$e->getCode());
         }
     }
 
-    public function addBook() {
-
+    public function addBook($vars) {
+        try {
+            $this->db->beginTransaction();
+            $sql = "INSERT INTO books (title, subject, year) VALUES (?, ?, ?)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$vars['title'], $vars['subject'], $vars['year']]);
+        
+            $this->db->commit();
+        }catch (Exception $e){
+            $this->db->rollback();
+            throw $e;
+        }
     }
 
     public function viewBook() {

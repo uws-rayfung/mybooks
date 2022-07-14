@@ -54,7 +54,18 @@ class App {
         }
     }
 
-    public function deleteBook() {
+    public function deleteBook($id) {
+        try {
+            $this->db->beginTransaction();
+            $sql = "DELETE FROM books WHERE id=?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id]);
+        
+            $this->db->commit();
+        }catch (Exception $e){
+            $this->db->rollback();
+            throw $e;
+        }
 
     }
 }

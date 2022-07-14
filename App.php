@@ -29,7 +29,7 @@ class App {
 
     }
 
-    pubic function deleteBook() {
+    public function deleteBook() {
 
     }
 }

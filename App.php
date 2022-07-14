@@ -40,8 +40,18 @@ class App {
         return $book;
     }
 
-    public function updateBook() {
-
+    public function updateBook($fields) {
+        try {
+            $this->db->beginTransaction();
+            $sql = "UPDATE books SET title=?, subject=?, year=? WHERE id=?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$fields['title'], $fields['subject'], $fields['year'], $fields['id']]);
+        
+            $this->db->commit();
+        }catch (Exception $e){
+            $this->db->rollback();
+            throw $e;
+        }
     }
 
     public function deleteBook() {

@@ -83,4 +83,29 @@ class App {
 
         return $books;
     }    
+
+    function login($username, $password) {
+        try {
+            $sql = "select * from users where email = ? and password = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$_POST['email'], $_POST['password']]);
+            $user = $stmt->fetch();
+
+            if ($user) {
+ 
+                $_SESSION['isLoggedIn'] = true;
+                $_SESSION['user'] =  $user->name;          
+    
+                return true;
+            } else {
+                $_SESSION['isLoggedIn'] = false;            
+
+            }
+            return false;
+    
+        }catch (Exception $e){
+            throw $e;
+        }
+    }
+
 }

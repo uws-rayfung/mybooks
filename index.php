@@ -2,12 +2,18 @@
 require "config.inc.php";
 require "App.php";
 
+session_start();
+
 $myapp = new App($mysql_host, $mysql_db, $mysql_user, $mysql_pass, $mysql_charset);
 
 switch ($_GET['action']) {
     case "delete":
         $myapp->deleteBook($_GET['id']);
         header("Location: /");
+        break;
+    case "logout":
+        $_SESSION['isLoggedIn'] = false;
+        $_SESSION['user'] = "";
         break;
 }
 
@@ -17,15 +23,24 @@ switch ($_POST['submit']) {
         break;        
     case "edit-book":
         $myapp->updateBook($_POST);
-        break;        
-    
+        break;
+    case "login":
+        $myapp->login($_POST['email'], $_POST['password']);
+        if (!$_SESSION['isLoggedIn']) {
+            die('Invalid password. <a href="/login.php">Try again</a>');
+        }
+        break;    
 }
+
+if (!$_SESSION['isLoggedIn']) 
+    header("Location: /login.php");
 
 $books = $myapp->listBooks();
 ?>
 <html>
         <body>
             <h1>My Books</h1>
+            <p>Welcome <?=$_SESSION['user']?>! <a href="/?action=logout">Logout</a></p>
             <? if (count($books) > 0) { ?>
             <table>
                 <tr><th>Year</th><th>Subject</th><th>Title</th><th></th><th></th></tr>

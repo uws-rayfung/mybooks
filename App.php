@@ -66,6 +66,21 @@ class App {
             $this->db->rollback();
             throw $e;
         }
-
     }
+
+    public function listBooks() {
+        $books = array();
+
+        try {
+            $sql = "select * from books";
+            $stmt = $this->db->query($sql);
+            while ($book = $stmt->fetch()) {
+                $books[] = $book;
+            }
+        }catch (Exception $e){
+            throw $e;
+        }
+
+        return $books;
+    }    
 }

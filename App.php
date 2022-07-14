@@ -31,8 +31,13 @@ class App {
         }
     }
 
-    public function viewBook() {
-
+    public function viewBook($id) {
+        $sql = "select * from books where id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+        $book = $stmt->fetch();
+        
+        return $book;
     }
 
     public function updateBook() {
